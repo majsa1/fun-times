@@ -13,7 +13,7 @@ struct ContentView: View {
     let difficulty = ["All levels", "Easy", "Difficult"]
     let amountOfQuestions = [0, 5, 10, 20]
     
-    @State private var questions = Questions()
+    @State private var questions = Tables()
     
     @State private var gameOn = false
     @State private var showAlert = false
@@ -24,11 +24,11 @@ struct ContentView: View {
     @State private var difficultySelection = "All levels"
     @State private var amountSelection = 0
     
-    @State private var questionArray = [Table]()
+    @State private var questionArray = [Question]()
     
     @State private var question = ""
     @State private var questionIndex = 0
-    @State private var answer = "?"
+    @State private var answer = "Tap to answer"
     @State private var counter = 1
     @State private var score = 0
     @State private var correct = false
@@ -180,7 +180,7 @@ struct ContentView: View {
                                 .frame(width: 200, height: 50, alignment: .center)
                                 .multilineTextAlignment(.center)
                                 .font(.title)
-                                .foregroundColor(answer == "?" ? .gray : .black)
+                                .foregroundColor(answer == "Tap to answer" ? .gray : .black)
                                 .clipShape(RoundedRectangle(cornerRadius: 6.0))
                                 .overlay(RoundedRectangle(cornerRadius: 6.0).stroke(Color.gray, lineWidth: 1))
                             
@@ -224,7 +224,7 @@ struct ContentView: View {
                                     }
                                     HStack(spacing: 30) {
                                         Button("Start over") {
-                                            questions.table.removeAll()
+                                            questions.tables.removeAll()
                                             allCleared()
                                         }
                                         .padding()
@@ -255,7 +255,7 @@ struct ContentView: View {
                                 .font(.title2)
                             
                             Button("Start over") {
-                                questions.table.removeAll()
+                                questions.tables.removeAll()
                                 allCleared()
                             }
                             .padding()
@@ -282,7 +282,7 @@ struct ContentView: View {
         questionIndex = 0
         score = 0
         counter = 1
-        answer = "?"
+        answer = "Tap to answer"
     }
     
     func allTapped() {
@@ -308,22 +308,22 @@ struct ContentView: View {
     
     func getQuestions() {
         
-        for number in 0..<questions.table.count {
+        for number in 0..<questions.tables.count {
             for num in 0..<tableArray.count {
-                if questions.table[number].factorB == tableArray[num] {
+                if questions.tables[number].factorB == tableArray[num] {
 
                     switch difficultySelection {
                     
                     case "Easy":
-                    if questions.table[number].level == 1 {
-                        questionArray.append(questions.table[number])
+                    if questions.tables[number].level == 1 {
+                        questionArray.append(questions.tables[number])
                     }
                     case "Difficult":
-                    if questions.table[number].level == 3 {
-                        questionArray.append(questions.table[number])
+                    if questions.tables[number].level == 3 {
+                        questionArray.append(questions.tables[number])
                     }
-                    case "All": questionArray.append(questions.table[number])
-                    default: questionArray.append(questions.table[number])
+                    case "All": questionArray.append(questions.tables[number])
+                    default: questionArray.append(questions.tables[number])
                     }
                 }
             }
@@ -343,6 +343,8 @@ struct ContentView: View {
     }
     
     func getAnswer() {
+        
+        var previous = question
         
         if counter <= amountSelection {
             if answer == String(questionArray[questionIndex].product) {
@@ -371,8 +373,14 @@ struct ContentView: View {
             counter += 1
             correct = false
             rotation = 0
+            previous = question
             currentQuestion()
             animalsIndex = Int.random(in: 0..<animals.count)
+            
+            if question == previous {
+                questionIndex += 1
+                currentQuestion()
+            }
         }
     }
 }

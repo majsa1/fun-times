@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Table {
+struct Question {
     
     var factorA: Int
     var factorB: Int
@@ -24,15 +24,15 @@ struct Table {
     }
 }
     
-struct Questions {
+struct Tables {
     
-    var table = [Table]()
+    var tables = [Question]()
     
     mutating func getAll() {
         
         for numberA in 1...12 {
             for numberB in 1...12 {
-                table.append(Table(factorA: numberA, factorB: numberB))
+                tables.append(Question(factorA: numberA, factorB: numberB))
             }
         }
     }
